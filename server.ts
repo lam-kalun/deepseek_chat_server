@@ -1,7 +1,7 @@
 import { createServer } from 'http'
+import type { IncomingMessage } from 'http'
 import axios from 'axios'
 import 'dotenv/config'
-import { createReadStream } from 'fs'
 
 const api = axios.create({
   baseURL: 'https://api.deepseek.com',
@@ -12,12 +12,15 @@ const api = axios.create({
 })
 
 createServer(async (req, res) => {
+  // 跨域问题
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   const url = new URL(req.url!, 'file:///')
   const query = Object.fromEntries(url.searchParams.entries())
+  const body = await getRequestBody(req)
   switch(url.pathname) {
-    case '/':
-      createReadStream('./index.html').pipe(res)
-      break
     case '/chat':
       res.setHeader('Content-Type', 'text/event-stream')
       if (!query.prompt) {
@@ -37,8 +40,49 @@ createServer(async (req, res) => {
       })
       data.pipe(res)
       break
+    case '/multiple-chat': {
+      res.setHeader('Content-Type', 'text/event-stream')
+      if (!body) {
+        res.end();
+        break
+      }
+      const { queList, ansList } = JSON.parse(body)
+      const messages = queList.reduce((acc: object[], cur: string, index: number) => {
+        const list = [{"role": "user", "content": cur}]
+        if (ansList[index]) {
+          list.push({"role": "assistant", "content": ansList[index]})
+        }
+        return acc.concat(list)
+      }, [])
+      const { data } = await api.post('chat/completions', {
+        "model": "deepseek-chat",
+        "messages": messages,
+        "stream": true
+      }, {
+        responseType: 'stream'
+      })
+      data.pipe(res)
+      break
+    }
     default:
+      res.write(`event: error\n`);
+      res.write(`data: ${JSON.stringify({ error: "404" })}\n\n`);
       res.end('')
       break
   }
 }).listen(9000)
+
+function getRequestBody(req: IncomingMessage): Promise<string> {
+  return new Promise((resolve, reject) => {
+    let body = ''
+    req.on('data', (chunk) => {
+      body += chunk.toString()
+    })
+    req.on('end', () => {
+      resolve(body)
+    })
+    req.on('error', (err) => {
+      reject(err)
+    })
+  })
+}
