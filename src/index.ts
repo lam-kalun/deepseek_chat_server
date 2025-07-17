@@ -2,6 +2,7 @@ import { createServer } from 'http'
 import type { IncomingMessage } from 'http'
 import axios from 'axios'
 import 'dotenv/config'
+import { main } from './MCPClient'
 
 const api = axios.create({
   baseURL: 'https://api.deepseek.com',
@@ -65,6 +66,7 @@ createServer(async (req, res) => {
       break
     }
     case '/mcp-chat': {
+      main()
       break
     }
     default:
