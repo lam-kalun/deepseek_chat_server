@@ -1,1 +1,0 @@
-tsnd server.ts

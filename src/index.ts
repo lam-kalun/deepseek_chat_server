@@ -13,7 +13,7 @@ const api = axios.create({
 
 createServer(async (req, res) => {
   // 跨域问题
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -64,13 +64,16 @@ createServer(async (req, res) => {
       data.pipe(res)
       break
     }
+    case '/mcp-chat': {
+      break
+    }
     default:
       res.write(`event: error\n`);
       res.write(`data: ${JSON.stringify({ error: "404" })}\n\n`);
       res.end('')
       break
   }
-}).listen(9000)
+}).listen(6060)
 
 function getRequestBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
