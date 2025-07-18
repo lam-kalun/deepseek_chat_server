@@ -21,6 +21,11 @@ createServer(async (req, res) => {
   const url = new URL(req.url!, 'file:///')
   const query = Object.fromEntries(url.searchParams.entries())
   const body = await getRequestBody(req)
+  const { queList = [], ansList = [] } = JSON.parse(body || '{}')
+  if (req.method === 'OPTIONS') {
+    res.end('')
+    return
+  }
   switch(url.pathname) {
     case '/chat':
       res.setHeader('Content-Type', 'text/event-stream')
@@ -47,7 +52,6 @@ createServer(async (req, res) => {
         res.end();
         break
       }
-      const { queList, ansList } = JSON.parse(body)
       const messages = queList.reduce((acc: object[], cur: string, index: number) => {
         const list = [{"role": "user", "content": cur}]
         if (ansList[index]) {
@@ -66,7 +70,8 @@ createServer(async (req, res) => {
       break
     }
     case '/mcp-chat': {
-      main()
+      const response = await main(queList, ansList)
+      res.end(JSON.stringify(response))
       break
     }
     default:
