@@ -2,7 +2,7 @@ import { createServer } from 'http'
 import type { IncomingMessage } from 'http'
 import axios from 'axios'
 import 'dotenv/config'
-import { main } from './MCPClient'
+import { main, streamMain } from './MCPClient'
 
 const api = axios.create({
   baseURL: 'https://api.deepseek.com',
@@ -22,10 +22,10 @@ createServer(async (req, res) => {
   const query = Object.fromEntries(url.searchParams.entries())
   const body = await getRequestBody(req)
   const { queList = [], ansList = [] } = JSON.parse(body || '{}')
-  if (req.method === 'OPTIONS') {
-    res.end('')
-    return
-  }
+  // if (req.method === 'OPTIONS') {
+  //   res.end('')
+  //   return
+  // }
   switch(url.pathname) {
     case '/chat':
       res.setHeader('Content-Type', 'text/event-stream')
@@ -72,6 +72,21 @@ createServer(async (req, res) => {
     case '/mcp-chat': {
       const response = await main(queList, ansList)
       res.end(JSON.stringify(response))
+      break
+    }
+    case '/stream-mcp-chat': {
+      res.setHeader('Content-Type', 'text/event-stream')
+      // todo 弄清楚下面这东西（划掉）能不能用stream返回（可能是SSE格式问题）
+      // res.write('我')
+      // res.write('是')
+      // res.write('一')
+      // res.write('个')
+      // res.write('A')
+      // res.write('I')
+      // res.end('[DONE]')
+
+      // todo 弄清楚必须要使用await得原因
+      await streamMain(queList, ansList, res)
       break
     }
     default:

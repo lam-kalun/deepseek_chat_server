@@ -1,3 +1,4 @@
+import { ServerResponse } from "http";
 import { MCPClient } from "./units/mcp";
 
 export async function main(queList: string[], ansList: string[]) {
@@ -10,4 +11,14 @@ export async function main(queList: string[], ansList: string[]) {
     await client.cleanup()
   }
   return response
+}
+
+export async function streamMain(queList: string[], ansList: string[], res: ServerResponse) {  
+  const client = new MCPClient(queList, ansList)
+  try {
+    await client.connectToServer()
+    await client.streamChatLoop(res)
+  } finally {
+    await client.cleanup()
+  }
 }
