@@ -22,10 +22,11 @@ createServer(async (req, res) => {
   const query = Object.fromEntries(url.searchParams.entries())
   const body = await getRequestBody(req)
   const { queList = [], ansList = [] } = JSON.parse(body || '{}')
-  // if (req.method === 'OPTIONS') {
-  //   res.end('')
-  //   return
-  // }
+  // todo axios会多请求一个OPTIONS
+  if (req.method === 'OPTIONS') {
+    res.end('')
+    return
+  }
   switch(url.pathname) {
     case '/chat':
       res.setHeader('Content-Type', 'text/event-stream')
