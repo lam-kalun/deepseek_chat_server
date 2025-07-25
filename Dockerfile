@@ -17,7 +17,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # 使用国内镜像源安装依赖
-RUN npm config set registry https://mirrors.cloud.tencent.com/npm/ && \
+RUN npm config set registry https://registry.npmjs.org/ 
 RUN npm install tsx
 RUN npm install pnpm
 RUN pnpm install
