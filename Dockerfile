@@ -18,10 +18,8 @@ COPY package*.json ./
 
 # 使用国内镜像源安装依赖
 RUN npm config set registry https://mirrors.cloud.tencent.com/npm/ && \
-#     npm install --only=production && \
-#     npm cache clean --force
-RUN npm install tsx -g
-RUN npm install pnpm -g
+RUN npm install tsx
+RUN npm install pnpm
 RUN pnpm install
 RUN pnpm run build_mcp_server
 
