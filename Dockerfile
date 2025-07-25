@@ -2,7 +2,7 @@
 # https://hub.docker.com/_/node
 FROM node:22-alpine
 
-RUN apk add --update nodejs npm
+RUN apk add --update nodejs npm pnpm tsx
 
 # 设置时区
 RUN apk add tzdata && \
@@ -18,8 +18,6 @@ COPY package*.json ./
 
 # 使用国内镜像源安装依赖
 RUN npm config set registry https://registry.npmjs.org/ 
-RUN npm install tsx
-RUN npm install pnpm
 RUN pnpm install
 RUN pnpm run build_mcp_server
 
