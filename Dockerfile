@@ -28,4 +28,4 @@ COPY . .
 EXPOSE 6060
 
 # 启动服务
-CMD [ "npm", "run", "dev" ]
+CMD [ "tsx", "src/index.ts" ]
