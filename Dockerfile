@@ -2,7 +2,7 @@
 # https://hub.docker.com/_/node
 FROM node:22-alpine
 
-RUN apk add --update nodejs npm pnpm tsx
+RUN apk add --update nodejs npm
 
 # 设置时区
 RUN apk add tzdata && \
