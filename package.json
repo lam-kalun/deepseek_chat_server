@@ -1,5 +1,7 @@
 {
 	"name": "chat_server",
+	"version": "1.0.0",
+	"description": "If I can, I can. If I can't, go back to Shunde.",
 	"scripts": {
 		"build": "rimraf dist && tsc",
 		"build_mcp_server": "rimraf src/MCPServer/dist && tsc src/MCPServer/index.ts --outDir src/MCPServer/dist",

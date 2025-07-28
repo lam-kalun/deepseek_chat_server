@@ -19,6 +19,7 @@ COPY package*.json ./
 # 使用国内镜像源安装依赖
 RUN npm config set registry https://registry.npmjs.org/ 
 RUN pnpm install --only=production
+RUN pnpm build_mcp_server
 
 # 将本地代码复制到工作目录内
 COPY . .
