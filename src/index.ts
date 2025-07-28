@@ -96,7 +96,7 @@ createServer(async (req, res) => {
       res.end('')
       break
   }
-}).listen(3000)
+}).listen(80)
 
 function getRequestBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {

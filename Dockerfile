@@ -24,7 +24,7 @@ RUN pnpm install --only=production
 COPY . .
 
 # 暴露端口
-EXPOSE 3000
+EXPOSE 80
 
 # 启动服务
 CMD [ "pnpm", "dev" ]
