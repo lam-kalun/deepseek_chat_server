@@ -28,4 +28,4 @@ COPY . .
 EXPOSE 3000
 
 # 启动服务
-CMD [ "tsx", "src/index.ts" ]
+CMD [ "pnpm", "dev" ]
