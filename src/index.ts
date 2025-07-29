@@ -17,12 +17,18 @@ createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
   const url = new URL(req.url!, 'file:///')
   const query = Object.fromEntries(url.searchParams.entries())
   const body = await getRequestBody(req)
   const { queList = [], ansList = [] } = JSON.parse(body || '{}')
-  // todo axios会多请求一个OPTIONS
+  // !todo axios会多请求一个OPTIONS
+  // 任一条件满足
+  // 使用了 PUT、DELETE、CONNECT、OPTIONS、TRACE、PATCH 方法。
+  // 设置了 自定义请求头（如 Authorization、X-Custom-Header）。
+  // Content-Type 不是以下三种之一：
+  // application/x-www-form-urlencoded、multipart/form-data、text/plain。
+
+  // todo 将请求头改为application/x-www-form-urlencoded
   if (req.method === 'OPTIONS') {
     res.end('')
     return
@@ -77,14 +83,15 @@ createServer(async (req, res) => {
     }
     case '/stream-mcp-chat': {
       res.setHeader('Content-Type', 'text/event-stream')
-      // todo 弄清楚下面这东西（划掉）能不能用stream返回（可能是SSE格式问题）
-      // res.write('我')
-      // res.write('是')
-      // res.write('一')
-      // res.write('个')
-      // res.write('A')
-      // res.write('I')
-      // res.end('[DONE]')
+      // !todo 弄清楚下面这东西（划掉）能不能用stream返回（可能是SSE格式问题）
+      // 是SSE格式问题
+      // res.write('data: 我\n\n')
+      // res.write('data: 是\n\n')
+      // res.write('data: 一\n\n')
+      // res.write('data: 个\n\n')
+      // res.write('data: A\n\n')
+      // res.write('data: I\n\n')
+      // res.end('data: [DONE]\n\n')
 
       // todo 弄清楚必须要使用await得原因
       await streamMain(queList, ansList, res)
@@ -96,7 +103,7 @@ createServer(async (req, res) => {
       res.end('')
       break
   }
-}).listen(80)
+}).listen(3000)
 
 function getRequestBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {

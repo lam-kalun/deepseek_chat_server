@@ -144,6 +144,8 @@ export class MCPClient {
     const toolCalls: any[]= []
     let collectContent: string = ''
     for await (const chunk of completion) {
+      console.log(JSON.stringify(chunk));
+      
       const choice = chunk.choices[0]
       if (Object.prototype.hasOwnProperty.call(choice.delta, 'tool_calls')) {
         for (const toolCall of choice.delta.tool_calls!) {
@@ -162,10 +164,10 @@ export class MCPClient {
             toolCalls[idx].id = toolCall.id
           }
           if (toolCall.function?.name) {
-            toolCalls[idx].function.name = toolCall.function.name
+            toolCalls[idx].function.name += toolCall.function.name
           }
           if (toolCall.function?.arguments) {
-            toolCalls[idx].function.arguments = toolCall.function.arguments
+            toolCalls[idx].function.arguments += toolCall.function.arguments
           }
         }
       }
@@ -197,7 +199,9 @@ export class MCPClient {
     // 每条消息以两个换行符 \n\n 结束
     // todo 并发时会多一条只有first的请求
     res.write(`data: ${JSON.stringify({message: 'first'})}\n\n`)
-    while (true) { 
+    while (true) {
+      console.log(JSON.stringify(this.messages));
+      
       const isStop = await this.streamProcessQuery(res)    
       if (isStop) {
         res.end('data: [DONE]\n\n')

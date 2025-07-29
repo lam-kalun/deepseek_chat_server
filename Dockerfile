@@ -25,7 +25,7 @@ RUN pnpm build_mcp_server
 COPY . .
 
 # 暴露端口
-EXPOSE 80
+EXPOSE 3000
 
 # 启动服务
 CMD [ "pnpm", "dev" ]
