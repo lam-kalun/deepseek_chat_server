@@ -144,8 +144,6 @@ export class MCPClient {
     const toolCalls: any[]= []
     let collectContent: string = ''
     for await (const chunk of completion) {
-      console.log(JSON.stringify(chunk));
-      
       const choice = chunk.choices[0]
       if (Object.prototype.hasOwnProperty.call(choice.delta, 'tool_calls')) {
         for (const toolCall of choice.delta.tool_calls!) {
@@ -200,8 +198,6 @@ export class MCPClient {
     // todo 并发时会多一条只有first的请求
     res.write(`data: ${JSON.stringify({message: 'first'})}\n\n`)
     while (true) {
-      console.log(JSON.stringify(this.messages));
-      
       const isStop = await this.streamProcessQuery(res)    
       if (isStop) {
         res.end('data: [DONE]\n\n')
@@ -212,6 +208,16 @@ export class MCPClient {
 
   async cleanup() {
     await this.mcp.close();
+  }
+
+  // 调试用
+  async testTool() {
+    try {
+      const result = await this.mcp.callTool({ name: 'get-baoz-details', arguments: { id: '003' } });
+      console.log("调用成功:", JSON.stringify(result));
+    } catch (error) {
+      console.error("调用失败:", error);
+    }
   }
 
 }

@@ -55,13 +55,12 @@ server.tool(
 server.tool(
   'get-baoz-details',
   '根据id获取饱藏详情信息',
+  // 必须用zod的格式
   {
     id: z.string().describe("饱藏id")
   },
   // todo 调用接口获取
   ({ id }) => {
-    console.log(id);
-    
     const baozInfoList = new Map([
       ['001', { color: '紫色' }],
       ['002', { color: '黄色' }],
