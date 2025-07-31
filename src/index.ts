@@ -105,6 +105,48 @@ createServer(async (req, res) => {
   }
 }).listen(3000)
 
+// 蒙面超人红腹口
+createServer(async (req, res) => {
+  const url = new URL(req.url!, 'file:///')
+  const query = Object.fromEntries(url.searchParams.entries())
+  switch(url.pathname) {
+    case '/get-baoz-info-list':
+      const info = {
+        软糖: { id: '001' },
+        薯片: { id: '002' },
+        巧克力: { id: '003' },
+        蛋糕王: { id: '004' },
+        布丁: { id: '005' },
+        '100零食盒子': { id: '006' }
+      }
+      res.end(JSON.stringify(info))
+      break
+    case '/get-baoz-details':
+      if (!query.id) {
+        res.write(`event: error\n`)
+        res.write(`data: ${JSON.stringify({ error: "404" })}\n\n`)
+        res.end('')
+        return
+      }
+      const baozInfoMap = new Map([
+        ['001', { color: '紫色' }],
+        ['002', { color: '黄色' }],
+        ['003', { color: '黑色或者白色' }],
+        ['004', { color: '白色' }],
+        ['005', { color: '黄色' }],
+        ['006', { color: '紫色或者橙色' }],
+      ])
+      const baozDetail = baozInfoMap.get(query.id) || {}
+      res.end(JSON.stringify(baozDetail))
+      break
+    default:
+      res.write(`event: error\n`)
+      res.write(`data: ${JSON.stringify({ error: "404" })}\n\n`)
+      res.end('')
+      break
+  }
+}).listen(2025)
+
 function getRequestBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
     let body = ''

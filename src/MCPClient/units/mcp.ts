@@ -213,7 +213,7 @@ export class MCPClient {
   // 调试用
   async testTool() {
     try {
-      const result = await this.mcp.callTool({ name: 'get-baoz-details', arguments: { id: '003' } });
+      const result = await this.mcp.callTool({ name: 'get-baoz-info-list', arguments: {} });
       console.log("调用成功:", JSON.stringify(result));
     } catch (error) {
       console.error("调用失败:", error);

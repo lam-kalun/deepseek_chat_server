@@ -17,6 +17,7 @@ export async function streamMain(queList: string[], ansList: string[], res: Serv
   const client = new MCPClient(queList, ansList)
   try {
     await client.connectToServer()
+    // await client.testTool()
     await client.streamChatLoop(res)
   } finally {
     await client.cleanup()

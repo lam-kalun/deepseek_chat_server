@@ -35,21 +35,19 @@ server.tool(
   'get-baoz-info-list',
   '获取饱藏信息列表',
   {},
-  () => ({
-    content: [
-      {
-        type: "text",
-        text: JSON.stringify({
-          软糖: { id: '001' },
-          薯片: { id: '002' },
-          巧克力: { id: '003' },
-          蛋糕王: { id: '004' },
-          布丁: { id: '005' },
-          '100零食盒子': { id: '006' }
-        }),
-      },
-    ],
-  })
+  async () => {
+    // todo 为什么process.env.REDB_API_URL不行
+    const response = await fetch(`http://127.0.0.1:2025/get-baoz-info-list`)
+    const baozInfo = await response.json()
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(baozInfo)
+        },
+      ],
+    }
+  }
 )
 
 server.tool(
@@ -59,22 +57,14 @@ server.tool(
   {
     id: z.string().describe("饱藏id")
   },
-  // todo 调用接口获取
-  ({ id }) => {
-    const baozInfoList = new Map([
-      ['001', { color: '紫色' }],
-      ['002', { color: '黄色' }],
-      ['003', { color: '黑色或者白色' }],
-      ['004', { color: '白色' }],
-      ['005', { color: '黄色' }],
-      ['006', { color: '紫色或者橙色' }],
-    ])
-    const res = baozInfoList.get(id) || {}
+  async ({ id }) => {
+    const response = await fetch(`http://127.0.0.1:2025/get-baoz-details?id=${id}`)
+    const baozDetail = await response.json()
     return {
       content: [
         {
           type: "text",
-          text: JSON.stringify(res),
+          text: JSON.stringify(baozDetail),
         },
       ],
     }
@@ -83,7 +73,7 @@ server.tool(
 
 async function main() {
   const transport = new StdioServerTransport()
-  await server.connect(transport);
+  await server.connect(transport)
 }
 
 main().catch((error) => {
