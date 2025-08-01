@@ -195,7 +195,8 @@ export class MCPClient {
     // 客户端使用fetchEventSource，服务端要使用SSE格式
     // 所有消息必须包装在 data: 前缀中
     // 每条消息以两个换行符 \n\n 结束
-    // todo 并发时会多一条只有first的请求
+    // !todo 并发时会多一条只有first的请求
+    // 后续没复现了
     res.write(`data: ${JSON.stringify({message: 'first'})}\n\n`)
     while (true) {
       const isStop = await this.streamProcessQuery(res)    

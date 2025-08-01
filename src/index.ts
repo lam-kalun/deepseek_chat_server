@@ -12,6 +12,7 @@ const api = axios.create({
   }
 })
 
+// 嫡长口
 createServer(async (req, res) => {
   // 跨域问题
   res.setHeader('Access-Control-Allow-Origin', '*');
